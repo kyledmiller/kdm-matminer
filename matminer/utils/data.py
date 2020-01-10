@@ -409,7 +409,7 @@ class IUCrBondValenceData:
     #***************************************************************
     """
 
-    def __init__(self, interpolate_soft=True):
+    def __init__(self, interpolate_soft=True, bvp_filename="bvparm2016.cif"):
         """
         Load bond valence parameters as pandas dataframe.
 
@@ -426,7 +426,7 @@ class IUCrBondValenceData:
         filepath = os.path.join(
             module_dir,
             "data_files",
-            "bvparm2016.cif")
+            bvp_filename)
         self.params = pd.read_csv(filepath, sep='\s+',
                                   header=None,
                                   names=['Atom1', 'Atom1_valence',
