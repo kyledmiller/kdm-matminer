@@ -40,7 +40,18 @@ from matminer.featurizers.utils.stats import PropertyStats
 from matminer.featurizers.utils.cgcnn import appropriate_kwargs, \
     CrystalGraphConvNetWrapper, CIFDataWrapper
 from matminer.utils.caching import get_all_nearest_neighbors
-from matminer.utils.data import IUCrBondValenceData
+#from matminer.utils.data import IUCrBondValenceData
+
+###############################################################################
+# Importing my tweaked version of matminer's bond valence class
+import importlib.util
+spec = importlib.util.spec_from_file_location("my_matminer", 
+                                              "/home/kdmiller/Projects/kdm-matminer/matminer/utils/data.py")
+my_matminer = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(my_matminer)
+IUCrBondValenceData = my_matminer.IUCrBondValenceData
+###############################################################################
+
 
 # For the CGCNNFeaturizer
 try:
@@ -3668,9 +3679,9 @@ class GlobalInstabilityIndex(BaseFeaturizer):
             averaged over all atoms in the unit cell.
     """
 
-    def __init__(self, r_cut=4.0, disordered_pymatgen=False):
+    def __init__(self, r_cut=4.0, disordered_pymatgen=False, bvp_filename="bvparm2016.cif"):
 
-        bv = IUCrBondValenceData()
+        bv = IUCrBondValenceData(bvp_filename=bvp_filename)
         self.bv_values = bv.params
         self.r_cut = r_cut
         self.disordered_pymatgen = disordered_pymatgen
