@@ -161,6 +161,15 @@ loop_
    _valence_param_ref_id
    _valence_param_details
 
+
+
+
+
+
+
+
+
+
 Ac 3   O  -2    2.24     0.37     b   ?
 Ac 3   O  -2    2.29     0.35     p   ?
 Ac 3   F  -1    2.13     0.37     b   ?
