@@ -3878,13 +3878,15 @@ class GlobalInstabilityIndex(BaseFeaturizer):
             bond_val_list: dataframe of bond valence parameters
         """
         bv_data = self.bv_values
-        print(f"bv_data = {bv_data}")
+        #with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+        #    print(f"bv_data = \n{bv_data}")
         bond_val_list = bv_data[(bv_data['Atom1'] == cation) &
                                 (bv_data['Atom1_valence'] == cat_val) &
                                 (bv_data['Atom2'] == anion) &
                                 (bv_data['Atom2_valence'] == an_val)]
         # If multiple values exist, take first one
-        print(bond_val_list)
+        #print(f"bv_list = {bond_val_list}")
+        #print(bond_val_list.iloc[0])
         return bond_val_list.iloc[0]
 
     @staticmethod
@@ -3896,7 +3898,7 @@ class GlobalInstabilityIndex(BaseFeaturizer):
         Returns:
             bv: Float, bond valence
         """
-        print(f'Params = {params}')
+        #print(f'Params = {params}')
         bv = np.exp((params['Ro'] - dist)/params['B'])
         return bv
 
