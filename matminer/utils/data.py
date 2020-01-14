@@ -478,7 +478,7 @@ class IUCrBondValenceData:
         """
 
         bv_data = self.params
-        print(bond_val_list)
+        #print(bond_val_list)
         bond_val_list = self.params.loc[(bv_data['Atom1'] == str(cation)) \
                                 & (bv_data['Atom1_valence'] == cat_val) \
                                 & (bv_data['Atom2'] == str(anion)) \
