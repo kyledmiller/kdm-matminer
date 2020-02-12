@@ -3808,6 +3808,7 @@ class GlobalInstabilityIndex(BaseFeaturizer):
                                                cat_val=site_val,
                                                an_val=neighbor_val)
                     bvs += self.compute_bv(params, dist)
+                    # print(f'bvs += {self.compute_bv(params, dist)} for {neighbor}')
                 elif np.sign(site_val) == -1 and np.sign(neighbor_val) == 1:
                     params = self.get_bv_params(cation=neighbor_el,
                                                anion=site_el,
@@ -3841,6 +3842,9 @@ class GlobalInstabilityIndex(BaseFeaturizer):
         pairs = s.get_all_neighbors(r=cutoff)
         site_val_sums = {} # Cache bond valence deviations
 
+        if len(pairs) == 0:
+            print('No pairs found within cutoff for GII calculation')
+        # print(f'pair list = \n{pairs}')
         for i, neighbor_list in enumerate(pairs):
             site = s[i]
             equivs = self.get_equiv_sites(s, site)
