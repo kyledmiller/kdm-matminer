@@ -31,7 +31,7 @@ extras_list = [r for d in extras_dict.values() for r in d]
 if __name__ == "__main__":
     setup(
         name='matminer',
-        version='0.6.2',
+        version='0.6.3',
         description='matminer is a library that contains tools for data '
                     'mining in Materials Science',
         long_description=open(os.path.join(module_dir, 'README.md')).read(),
@@ -45,7 +45,7 @@ if __name__ == "__main__":
             'matminer.featurizers': ["*.yaml"],
             'matminer.utils.data_files': ['*.cif', '*.csv', '*.tsv', '*.json',
                                           'magpie_elementdata/*.table',
-                                          'jarvis/*.json']},
+                                          'jarvis/*.json', '*.txt']},
         zip_safe=False,
         install_requires=reqs_list,
         extras_require=extras_dict,

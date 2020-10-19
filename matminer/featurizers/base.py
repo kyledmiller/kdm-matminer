@@ -3,19 +3,20 @@ from __future__ import division, unicode_literals
 import sys
 import traceback
 import warnings
-from multiprocessing import Pool, cpu_count
+from abc import ABC, abstractmethod
 from functools import partial
+from multiprocessing import Pool, cpu_count
 
 import numpy as np
 import pandas as pd
-from six import string_types, reraise
-from sklearn.base import TransformerMixin, BaseEstimator, is_classifier
-import tqdm
+from six import reraise, string_types
+from sklearn.base import BaseEstimator, TransformerMixin, is_classifier
+from tqdm.auto import tqdm
 
-from matminer.utils.utils import homogenize_multiindex, is_notebook
+from matminer.utils.utils import homogenize_multiindex
 
 
-class BaseFeaturizer(BaseEstimator, TransformerMixin):
+class BaseFeaturizer(BaseEstimator, TransformerMixin, ABC):
     """
     Abstract class to calculate features from raw materials input data
     such a compound formula or a pymatgen crystal structure or
@@ -99,7 +100,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
 
     An additional factor to consider is the chunksize for data parallelisation.
     For lightweight computational tasks, the overhead associated with passing
-    data from `multiprocessing.Pool.map()` to the function being parallelised
+    data from `multiprocessing.Pool.map()` to the function being parallelized
     can increase the time taken for all tasks to be completed. By setting
     the `self._chunksize` argument, the overhead associated with passing data
     to the tasks can be reduced. Note that there is only an advantage to using
@@ -108,7 +109,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
     itself. By default, we allow the Python multiprocessing library to determine
     the chunk size automatically based on the size of the list being featurized.
     You may want to specify a small chunk size for computationally-expensive
-    featurizers, which will enable better distribution of taks across threads.
+    featurizers, which will enable better distribution of tasks across threads.
     In contrast, for more lightweight featurizers, it is recommended that
     the implementor trial a range of chunksize values to find the optimum.
     As a general rule of thumb, if the featurize function takes 0.1 seconds or
@@ -140,7 +141,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
     """
 
     def set_n_jobs(self, n_jobs):
-        """Set the number of threads for this """
+        """Set the number of threads for this."""
         self._n_jobs = n_jobs
 
     @property
@@ -250,7 +251,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
     def transform(self, X):
         """Compute features for a list of inputs"""
 
-        return self.featurize_many(X, ignore_errors=True)
+        return self.featurize_many(X, ignore_errors=True, pbar=False)
 
     def fit_featurize_dataframe(self, df, col_id, fit_args=None,
                                 *args, **kwargs):
@@ -426,7 +427,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
             raise Exception("'entries' must be a list-like object")
 
         # Special case: Empty list
-        if len(entries) is 0:
+        if len(entries) == 0:
             return []
 
         # If the featurize function only has a single arg, zip the inputs
@@ -437,12 +438,8 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
 
         # Add a progress bar
         if pbar:
-            if is_notebook():
-                tqdm_func = tqdm.tqdm_notebook
-            else:
-                tqdm_func = tqdm.tqdm
             # list() required, tqdm has issues with memory if generator given
-            entries = tqdm_func(list(entries), desc=self.__class__.__name__)
+            entries = tqdm(list(entries), desc=self.__class__.__name__)
 
         # Run the actual featurization
         if self.n_jobs == 1:
@@ -507,6 +504,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
                        "featurize_many(), featurize_dataframe(), etc.)."
                 reraise(type(e), type(e)(msg), sys.exc_info()[2])
 
+    @abstractmethod
     def featurize(self, *x):
         """
         Main featurizer function, which has to be implemented
@@ -521,6 +519,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
 
         raise NotImplementedError("featurize() is not defined!")
 
+    @abstractmethod
     def feature_labels(self):
         """
         Generate attribute names.
@@ -531,6 +530,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
 
         raise NotImplementedError("feature_labels() is not defined!")
 
+    @abstractmethod
     def citations(self):
         """
         Citation(s) and reference(s) for this feature.
@@ -542,6 +542,7 @@ class BaseFeaturizer(BaseEstimator, TransformerMixin):
 
         raise NotImplementedError("citations() is not defined!")
 
+    @abstractmethod
     def implementors(self):
         """
         List of implementors of the feature.

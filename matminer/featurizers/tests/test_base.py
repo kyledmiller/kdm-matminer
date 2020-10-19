@@ -85,6 +85,12 @@ class MultiArgs2(BaseFeaturizer):
     def feature_labels(self):
         return ['y2']
 
+    def citations(self):
+        return []
+
+    def implementors(self):
+        return []
+
 
 class FittableFeaturizer(BaseFeaturizer):
     """
@@ -117,6 +123,12 @@ class MultiTypeFeaturizer(BaseFeaturizer):
 
     def feature_labels(self):
         return ['label', 'int_label']
+
+    def citations(self):
+        return []
+
+    def implementors(self):
+        return []
 
 
 class TestBaseClass(PymatgenTest):
@@ -418,8 +430,6 @@ class TestBaseClass(PymatgenTest):
                                                           'x'),
                                                          multiindex=True)
 
-    @unittest.skipIf(os.environ.get("CI", None) == 'circle',
-                     "We skip this test when running circleci")
     def test_caching(self):
         """Test whether MultiFeaturizer properly caches """
 

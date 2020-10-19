@@ -5,20 +5,19 @@
 # Generally, don't mess with this file unless you know what you are doing.
 
 ## MPDS
-ujson==1.35
-jmespath==0.9.3
-httplib2==0.10.3
-ase==3.14.1
+ujson==3.0.0
+jmespath==0.10.0
+httplib2==0.18.1
+ase==3.19.1
 
 ## dscribe
-dscribe==0.2.9
-
+dscribe==0.3.5
 
 ## MDF-forge
-mdf_forge==0.6.1
+mdf-forge==0.7.6
 
 ## AFLOW
-aflow==0.0.9
+aflow==0.0.11
 
 ## Citrine
-citrination-client==4.0.1
+citrination-client==6.5.0
