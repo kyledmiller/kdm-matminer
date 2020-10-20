@@ -3500,10 +3500,13 @@ class GlobalInstabilityIndex(BaseFeaturizer):
             averaged over all atoms in the unit cell.
     """
 
-    def __init__(self, r_cut=4.0, disordered_pymatgen=False, bvp_filename="bvparm2016.cif"):
+    def __init__(self, r_cut=4.0, disordered_pymatgen=False, bvp_filename="bvparm2016.cif", bvp_df={}):
 
-        bv = IUCrBondValenceData(bvp_filename=bvp_filename)
-        self.bv_values = bv.params
+        if bvp_df is self.__init__.__defaults__[3]:
+            bv = IUCrBondValenceData(bvp_filename=bvp_filename)
+            self.bv_values = bv.params
+        else: 
+            self.bv_values = bvp_df
         self.r_cut = r_cut
         self.disordered_pymatgen = disordered_pymatgen
 
