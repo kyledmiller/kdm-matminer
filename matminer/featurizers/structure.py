@@ -42,9 +42,12 @@ from matminer.utils.caching import get_all_nearest_neighbors
 
 ###############################################################################
 # Importing my tweaked version of matminer's bond valence class
+from os.path import expanduser
+home = expanduser('~')
+
 import importlib.util
 spec = importlib.util.spec_from_file_location("my_matminer", 
-                                              "/home/kdmiller/Projects/kdm-matminer/matminer/utils/data.py")
+                                              f"{home}/Applications/kdm-matminer/matminer/utils/data.py")
 my_matminer = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(my_matminer)
 IUCrBondValenceData = my_matminer.IUCrBondValenceData
@@ -3523,19 +3526,23 @@ class GlobalInstabilityIndex(BaseFeaturizer):
         for site in struct:
             # Fail if site doesn't have either attribute
             if not hasattr(site, "species"):
+                print('Missing species attribute')
                 return False
             if isinstance(site.species.elements[0], Element):
+                print('Missing valence information')
                 return False
 
         elems = [str(x.element) for x in struct.composition.elements]
 
         # If compound is not ionically bonded, it is going to fail
         if not any([e in anions for e in elems]):
+            print("Found anion which likely isn't ionically bonded.")
             return False
         valences = [site.species.elements[0].oxi_state for site in struct]
 
         # If the oxidation states are technically provided but any are 0, fails
         if not all(valences):
+            print('Found oxidation state with value 0.')
             return False
 
         if len(struct) > 200:
@@ -3557,6 +3564,7 @@ class GlobalInstabilityIndex(BaseFeaturizer):
                     try:
                         self.get_bv_params(elem2, elem1, val_2, val_1)
                     except IndexError:
+                        print(f"Couldn't find tabulated bvparams between {elem1} and {elem2}.")
                         return False
         return True
 
