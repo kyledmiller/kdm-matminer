@@ -3713,10 +3713,11 @@ class GlobalInstabilityIndex(BaseFeaturizer):
         bv_data = self.bv_values
         #with pd.option_context('display.max_rows', None, 'display.max_columns', None):
         #    print(f"bv_data = \n{bv_data}")
-        bond_val_list = bv_data[(bv_data['Atom1'] == cation) &
+        #print(f'{cation} {anion} {cat_val} {an_val}')
+        bond_val_list = bv_data[(bv_data['Atom1'] == str(cation)) &
                                 (bv_data['Atom1_valence'] == cat_val) &
-                                (bv_data['Atom2'] == anion) &
-                                (bv_data['Atom2_valence'] == an_val)]
+                                (bv_data['Atom2'] == str(anion)) &
+                                (bv_data['Atom2_valence'] == an_val)] # str cast so we can feed element objects
         # If multiple values exist, take first one
         #print(f"bv_list = {bond_val_list}")
         #print(bond_val_list.iloc[0])
